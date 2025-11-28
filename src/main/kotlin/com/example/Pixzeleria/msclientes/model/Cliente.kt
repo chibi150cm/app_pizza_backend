@@ -10,7 +10,10 @@ data class Cliente(
     val id: Long? = null,
 
     val nombre: String,
+    @Column(unique = true)
     val email: String,
-    val telefono: String?,
-    val direccion: String?
+    val password: String,
+    val telefono: String? = null,
+    val direccion: String? = null,
+    val rol: String = "USER"
 )

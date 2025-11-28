@@ -10,32 +10,38 @@ import org.springframework.web.bind.annotation.*
 @CrossOrigin(origins = ["*"])
 class ClienteController(private val clienteService: ClienteService) {
 
+    @PostMapping("/registro")
+    fun registrar(@RequestBody cliente: Cliente): ResponseEntity<Cliente> {
+        return try {
+            val nuevo = clienteService.registrar(cliente)
+            ResponseEntity.ok(nuevo)
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().build() // Por si hay email duplicado
+        }
+    }
+
+    @PostMapping("/login")
+    fun login(@RequestBody credenciales: Map<String, String>): ResponseEntity<Cliente> {
+        val email = credenciales["email"]
+        val pass = credenciales["password"]
+
+        if (email != null && pass != null) {
+            val cliente = clienteService.login(email, pass)
+            if (cliente != null) {
+                return ResponseEntity.ok(cliente)
+            }
+        }
+        return ResponseEntity.status(401).build() // USTED NO ENTRA AQUÍ SEÑOR
+    }
+
     @PostMapping("/guardar")
     fun guardarPerfil(@RequestBody cliente: Cliente): ResponseEntity<Cliente> {
-        // Buscamos si ya existe algún cliente en la base de datos
-        val listaClientes = clienteService.listar()
-
-        return if (listaClientes.isEmpty()) {
-            // Si no hay nadie (porque lo borré, jiji), creamos uno nuevo.
-            val nuevo = clienteService.guardar(cliente)
-            ResponseEntity.ok(nuevo)
-        } else {
-            // Si alguien, pos se actualiza
-            val existente = listaClientes.first()
-            val actualizado = cliente.copy(id = existente.id)
-            ResponseEntity.ok(clienteService.guardar(actualizado))
-        }
+        return ResponseEntity.ok(clienteService.actualizar(cliente))
     }
 
     @DeleteMapping("/{id}")
     fun eliminar(@PathVariable id: Long): ResponseEntity<Void> {
-        val lista = clienteService.listar()
-        if (lista.isNotEmpty()) {
-            clienteService.eliminar(lista.first().id!!)
-        }
+        clienteService.eliminar(id)
         return ResponseEntity.noContent().build()
     }
-
-    @GetMapping
-    fun listar(): ResponseEntity<List<Cliente>> = ResponseEntity.ok(clienteService.listar())
 }
