@@ -41,7 +41,15 @@ class ClienteController(private val clienteService: ClienteService) {
 
     @DeleteMapping("/{id}")
     fun eliminar(@PathVariable id: Long): ResponseEntity<Void> {
-        clienteService.eliminar(id)
-        return ResponseEntity.noContent().build()
+        val aBorrar = clienteService.obtenerPorId(id)
+        if (aBorrar?.rol == "ADMIN") {
+            return ResponseEntity.status(403).build() // No me borre el admin
+        }
+        return try {
+            clienteService.eliminar(id)
+            ResponseEntity.noContent().build()
+        } catch (e: Exception) {
+            ResponseEntity.status(500).build()
+        }
     }
 }

@@ -34,6 +34,9 @@ class ClienteService(private val clienteRepository: ClienteRepository) {
         return null
     }
 
+    fun obtenerPorId(id: Long): Cliente? {
+        return clienteRepository.findById(id).orElse(null)
+    }
     fun listar(): List<Cliente> = clienteRepository.findAll()
 
     fun actualizar(cliente: Cliente): Cliente {
@@ -42,4 +45,5 @@ class ClienteService(private val clienteRepository: ClienteRepository) {
     }
 
     fun eliminar(id: Long) = clienteRepository.deleteById(id)
+
 }
