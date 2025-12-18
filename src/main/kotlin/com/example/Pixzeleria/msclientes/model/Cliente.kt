@@ -15,5 +15,6 @@ data class Cliente(
     val password: String,
     val telefono: String? = null,
     val direccion: String? = null,
-    val rol: String = "USER"
+    val rol: String,
+    val token: String? = null
 )
