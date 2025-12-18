@@ -11,12 +11,13 @@ import java.math.BigDecimal
 @Component
 class DataSeeder(
     private val clienteService: ClienteService,
-    private val pizzaRepository: PizzaRepository // <--- INYECCIÓN NUEVA
-) : CommandLineRunner {
+    private val pizzaRepository: PizzaRepository
+    ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
         crearAdmin()
-        crearPizzas() // <--- LLAMADA NUEVA
+        crearCocinero()
+        crearPizzas()
     }
 
     private fun crearAdmin() {
@@ -33,6 +34,24 @@ class DataSeeder(
             )
             clienteService.registrar(admin)
             println("✅ ADMIN CREADO")
+        }
+    }
+
+    private fun crearCocinero() {
+        val emailCocinero = "cocina@pixzeleria.com"
+        val clientes = clienteService.listar()
+
+        if (clientes.none { it.email == emailCocinero }) {
+            val cocinero = Cliente(
+                nombre = "Sanji Vinsmoke",
+                email = emailCocinero,
+                password = "123miau",
+                telefono = "987654321",
+                direccion = "Cocina del Baratie",
+                rol = "COCINERO"
+            )
+            clienteService.registrar(cocinero)
+            println("✅ COCINERO CREADO (LISTO PARA LA ACCIÓN)")
         }
     }
 
