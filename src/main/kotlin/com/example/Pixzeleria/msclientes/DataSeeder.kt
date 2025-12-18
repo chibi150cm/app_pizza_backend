@@ -17,6 +17,7 @@ class DataSeeder(
     override fun run(vararg args: String?) {
         crearAdmin()
         crearCocinero()
+        crearRepartidor()
         crearPizzas()
     }
 
@@ -51,7 +52,25 @@ class DataSeeder(
                 rol = "COCINERO"
             )
             clienteService.registrar(cocinero)
-            println("✅ COCINERO CREADO (LISTO PARA LA ACCIÓN)")
+            println("✅ COCINERO CREADO")
+        }
+    }
+
+    private fun crearRepartidor() {
+        val emailRepartidor = "reparto@pixzeleria.com"
+        val clientes = clienteService.listar()
+
+        if (clientes.none { it.email == emailRepartidor }) {
+            val repartidor = Cliente(
+                nombre = "God Usopp",
+                email = emailRepartidor,
+                password = "miau123",
+                telefono = "912768432",
+                direccion = "Villa Syrup / El Sunny",
+                rol = "REPARTIDOR"
+            )
+            clienteService.registrar(repartidor)
+            println("✅ REPARTIDOR CREADO")
         }
     }
 
