@@ -5,6 +5,7 @@ import com.example.Pixzeleria.mspedidos.repository.PedidoRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
+import java.util.Optional
 
 @Service
 @Transactional
@@ -27,6 +28,14 @@ class PedidoService(
 
         pedido.total = sumaTotal
 
+        return pedidoRepository.save(pedido)
+    }
+
+    fun actualizarEstado(id: Long, nuevoEstado: String): Pedido {
+        val pedido = pedidoRepository.findById(id).orElseThrow {
+            RuntimeException("Pedido no encontrado con ID: $id")
+        }
+        pedido.estado = nuevoEstado
         return pedidoRepository.save(pedido)
     }
 

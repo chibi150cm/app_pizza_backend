@@ -29,6 +29,23 @@ class PedidoController(
         return ResponseEntity.ok(pedidoService.obtenerPorCliente(id))
     }
 
+    @PutMapping("/{id}/estado")
+    fun actualizarEstado(
+        @PathVariable id: Long,
+        @RequestBody body: Map<String, String>
+        ): ResponseEntity<Pedido> {
+        val nuevoEstado = body["estado"]
+        if (nuevoEstado.isNullOrBlank()) {
+            return ResponseEntity.badRequest().build()
+        }
+        return try {
+            val actualizado = pedidoService.actualizarEstado(id, nuevoEstado)
+            ResponseEntity.ok(actualizado)
+        } catch (e: Exception) {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     @DeleteMapping("/{id}")
     fun eliminarPedido(@PathVariable id: Long): ResponseEntity<Void> {
         return try {
